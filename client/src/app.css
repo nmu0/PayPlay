@@ -1,0 +1,48 @@
+body {
+  /* Same font used by MS paint, if anyone is curious */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p, button, svg, .paints {
+  margin-left: 20px;
+}
+
+svg {
+  border: 1.5px solid rgb(190, 190, 190);
+}
+
+#canvas-paints {
+  height: 75px;
+  display: flex;
+  align-items: center;
+}
+
+h1 {
+  margin: 20px;
+}
+
+.paint.l {
+  height: 100px;
+  margin: 10px;
+}
+
+.paint.l.selected {
+  height: 110px;
+}
+
+.paint.s {
+  height: 50px;
+  margin: 5px;
+}
+
+.paint.s.selected {
+  height: 60px;
+}
+
+.paint.empty {
+  opacity: .4;
+}
+
+.err {
+  color: red;
+}
