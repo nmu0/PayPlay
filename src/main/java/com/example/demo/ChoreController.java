@@ -31,8 +31,8 @@ public class ChoreController {
             .filter(c -> c.getId().equals(choreId))
             .findFirst()
             .ifPresent(chore -> {
-                if (childId.equals(chore.getChildId())) {
-                    chore.setStatus(Chore.Status.DONE);
+                if (childId.equals(chore.getId())) {
+                    chore.setStatus(Chore.Status.COMPLETED);
                 }
             });
     }

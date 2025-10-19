@@ -10,6 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PayPlayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(PayPlayApplication.java.class, args);
+        SpringApplication.run(PayPlayApplication.class, args);
     }
 }
