@@ -28,7 +28,7 @@ export class App extends Component<AppProps, AppState> {
     // TODO: initialize state you create
     this.state = {page: {kind: "Login"}, userType: "Child"};
   }
-
+ 
   render = (): JSX.Element => {
     // TODO: update to return the correct component depending on which
     // page the app should render
