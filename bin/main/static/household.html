@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>PlayPay Demo</title>
+
+  <!-- Playful rounded font -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <a class="logo" href="/" aria-label="PlayPay home">
+      <!-- header icon image (static/header-icon.png) -->
+      <img src="/header-icon.png" alt="PlayPay" class="logo-img" />
+      <span class="logo-text">PlayPay</span>
+    </a>
+  </header>
+
+  <main class="main-content">
+    <h1>PlayPay</h1>
+
+    <div class="row">
+      Child ID: <input id="child" value="kid-001" />
+      <label class="sr-only" for="age">Age</label>
+      Age: <input id="age" type="number" value="9" class="small" />
+      Interests: <input id="interests" value="lego,reading" />
+    </div>
+
+    <div class="row">
+      <button onclick="health()">Check health</button>
+      <button onclick="generate()">Generate chores (AI)</button>
+      <button onclick="listChores()">Refresh chores</button>
+      <button onclick="balance()">Show balance</button>
+    </div>
+
+    <div class="row">
+      Payout coins: <input id="payoutCoins" type="number" value="10" class="wide" />
+      <button onclick="payout()">Payout (mock)</button>
+    </div>
+
+    <div class="row">
+      <a href="index.html" class="link-button">Back to Home</a>
+    </div>
+
+    <h3>Balance: <span id="bal">0</span> coins</h3>
+    <ul id="chores"></ul>
+    <pre id="out" style="white-space:pre-wrap"></pre>
+
+    <script>
+      const out = document.getElementById('out');
+      const child = () => document.getElementById('child').value;
+
+      async function health(){
+        const r = await fetch('/health'); out.textContent = JSON.stringify(await r.json(), null, 2);
+      }
+
+      async function generate(){
+        const age = document.getElementById('age').value;
+        const interests = document.getElementById('interests').value;
+        const url = `/api/chores/generate?childId=${encodeURIComponent(child())}&age=${age}&interests=${encodeURIComponent(interests)}`;
+        const r = await fetch(url, {method:'POST'});
+        out.textContent = JSON.stringify(await r.json(), null, 2);
+        await listChores(); await balance();
+      }
+
+      async function listChores(){
+        const r = await fetch(`/api/chores?childId=${encodeURIComponent(child())}`);
+        const chores = await r.json();
+        const ul = document.getElementById('chores'); ul.innerHTML = '';
+        chores.forEach(c => {
+          const li = document.createElement('li');
+          li.innerHTML = `<b>${c.title}</b> — ${c.description} (${c.rewardCoins} coins) [${c.status}]
+            <button onclick="approve('${c.id}')">Approve</button>
+            <button onclick="completeChore('${c.id}')">Complete</button>`;
+          ul.appendChild(li);
+        });
+      }
+
+      async function approve(id){
+        await fetch(`/api/chores/${id}/approve?childId=${encodeURIComponent(child())}`, {method:'POST'});
+        await listChores();
+      }
+
+      async function completeChore(id){
+        await fetch(`/api/chores/${id}/complete?childId=${encodeURIComponent(child())}`, {method:'POST'});
+        await listChores(); await balance();
+      }
+
+      async function balance(){
+        const r = await fetch(`/api/coins/balance?childId=${encodeURIComponent(child())}`);
+        const {coins} = await r.json(); document.getElementById('bal').textContent = coins ?? 0;
+      }
+
+      async function payout(){
+        const coins = Number(document.getElementById('payoutCoins').value || 0);
+        const r = await fetch(`/api/coins/payout?childId=${encodeURIComponent(child())}&coins=${coins}`, {method:'POST'});
+        out.textContent = JSON.stringify(await r.json(), null, 2);
+        await balance();
+      }
+
+      // initial load
+      listChores(); balance();
+    </script>
+  </main>
+</body>
+</html>
