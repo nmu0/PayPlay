@@ -84,4 +84,3 @@ public class Chore {
     public boolean isCompleted() { return this.status == Status.COMPLETED || this.status == Status.VERIFIED; }
     public void setCompleted(boolean completed) { this.status = completed ? Status.COMPLETED : Status.CREATED; }
 }
-
