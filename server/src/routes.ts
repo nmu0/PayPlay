@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 //import { compact_list } from "./list";
 
+type household = {name: string, joinCode: string, parents: string[], children: string[]}
+
+//create a list to store households
+//const households: household[] = [];
 
 // Require type checking of request body.
 type SafeRequest = Request<ParamsDictionary, {}, Record<string, unknown>>;
@@ -24,11 +28,34 @@ export const dummy = (req: SafeRequest, res: SafeResponse): void => {
 
 
 /** Returns a list of all the named save files. */
-export const getNames = (_req: SafeRequest, res: SafeResponse): void => {
-  // TODO: Implement getNames route function
-  console.log("GOT NAMES REQUEST ON SERVER")
-  res.json({names: "NAME NAME NAME BBCABCJALAMGHH"});
-  //_res.send({names: compact_list(saved.get_keys()).sort()});
+export const login = (req: SafeRequest, res: SafeResponse): void => {
+  console.log("GOT login REQUEST ON SERVER");
+
+  // Extract the joinCode from the query parameters
+  const joinCode = first(req.query.joinCode);
+  console.log(joinCode);
+  // Validate the joinCode
+  if (!joinCode) {
+    res.json({ status: false });
+    return;
+  }
+
+  // Example: Mock household data
+  const households: household[] = [
+    { name: "Smith Family", joinCode: "ABCD1234", parents: ["Alice", "Bob"], children: ["Charlie", "Daisy"] },
+    { name: "Johnson Family", joinCode: "EFGH5678", parents: ["Eve", "Frank"], children: ["Grace", "Hank"] },
+  ];
+  
+  // Find the household with the matching joinCode
+  const household = households.find(h => h.joinCode === joinCode);
+
+  if (household) {
+    // If the joinCode matches, return the household data
+    res.json({ status: true, household });
+  } else {
+    // If the joinCode does not match, return an error
+    res.json({ status: false });
+  }
 };
 
 
