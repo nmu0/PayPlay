@@ -9,6 +9,13 @@
             "name": "PayPlayApplication",
             "request": "launch",
             "mainClass": "com.example.demo.PayPlayApplication",
+            "projectName": "PayPlay"
+        },
+        {
+            "type": "java",
+            "name": "PayPlayApplication",
+            "request": "launch",
+            "mainClass": "com.example.demo.PayPlayApplication",
             "projectName": "demo-PayPlay"
         },
         {
