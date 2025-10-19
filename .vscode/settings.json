@@ -1,0 +1,9 @@
+{
+  "java.project.sourcePaths": [
+    "src/main/java",
+    "src/test/java"
+  ],
+  "java.configuration.checkProjectSettingsExclusions": false,
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic"
+}
