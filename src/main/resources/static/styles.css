@@ -41,10 +41,27 @@ html,body{
   box-shadow: 0 6px 18px rgba(0,0,0,0.04);
 }
 
+.main-title{
+  display: inline-block;
+  margin: 0 auto 18px auto; /* center horizontally */
+  background: #ff6aa3;      /* solid pink */
+  color: #ffffff;           /* text white for contrast */
+  border: 6px solid #ffffff;/* white border */
+  padding: 12px 28px;
+  font-size: 56px;         /* larger size */
+  line-height: 1;
+  font-weight: 900;
+  text-align: center;
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(255,106,154,0.18), 0 6px 12px rgba(0,0,0,0.08);
+  width: fit-content;
+}
+
 /* image logo sizing and styling */
 .logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
 .logo-img {
   width:56px; height:56px; object-fit:cover; border-radius:10px;
+
   padding:6px;
   background: rgba(255, 255, 255, 0);
   transform-origin:center;

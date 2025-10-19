@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>PlayPay Demo</title>
+  <title>PlayPay</title>
 
   <!-- Playful rounded font -->
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
   </header>
 
   <main class="main-content">
-    <h1 id="top">PlayPay</h1>
+    <h1 id="top" class="main-title">PlayPay</h1>
 
     <section class="auth-section">
-      <h2>Login / Household</h2>
+      <h2>Who are you?</h2>
 
       <div class="role-choices">
         <button id="btn-child" class="role-btn" onclick="selectRole('child')">I'm a Child</button>
@@ -37,7 +37,9 @@
       </div>
 
       <div id="parent-form" class="auth-form hidden">
-        <div class="parent-actions">
+        <h2>Household</h2>
+
+        <div class="role-choices"> 
           <button class="role-btn" onclick="showParentMode('create')" id="parent-create-btn">Create Household</button>
           <button class="role-btn" onclick="showParentMode('join')" id="parent-join-btn">Join Household</button>
         </div>

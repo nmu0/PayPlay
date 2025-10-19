@@ -2,107 +2,137 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>PlayPay Demo</title>
+  <title>PlayPay — Household</title>
 
   <!-- Playful rounded font -->
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="/styles.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 </head>
 <body>
   <header class="site-header" role="banner">
     <a class="logo" href="/" aria-label="PlayPay home">
-      <!-- header icon image (static/header-icon.png) -->
       <img src="/header-icon.png" alt="PlayPay" class="logo-img" />
       <span class="logo-text">PlayPay</span>
     </a>
   </header>
 
-  <main class="main-content">
-    <h1>PlayPay</h1>
+  <main class="main-content" role="main">
+    <h1 class="main-title">Household</h1>
 
-    <div class="row">
-      Child ID: <input id="child" value="kid-001" />
-      <label class="sr-only" for="age">Age</label>
-      Age: <input id="age" type="number" value="9" class="small" />
-      Interests: <input id="interests" value="lego,reading" />
-    </div>
+    <section class="auth-section" aria-labelledby="household-legend">
+      <h2 id="household-legend">Manage Household</h2>
 
-    <div class="row">
-      <button onclick="health()">Check health</button>
-      <button onclick="generate()">Generate chores (AI)</button>
-      <button onclick="listChores()">Refresh chores</button>
-      <button onclick="balance()">Show balance</button>
-    </div>
+      <div class="role-choices" style="margin-top:14px;">
+        <button class="role-btn" onclick="generate()" title="Generate chores">Generate</button>
+        <button class="role-btn" onclick="listChores()" title="Refresh chores">Refresh</button>
+      </div>
 
-    <div class="row">
-      Payout coins: <input id="payoutCoins" type="number" value="10" class="wide" />
-      <button onclick="payout()">Payout (mock)</button>
-    </div>
+      <div style="margin-top:18px;display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;">
+        <div style="flex:1;min-width:240px;">
+          <label class="helper-label" for="name" style="font-size:16px;margin-bottom:8px;">Name</label>
+          <input id="name" class="auth-input" placeholder="Child name (e.g. Sam)" aria-label="child name" />
+        </div>
 
-    <div class="row">
-      <a href="index.html" class="link-button">Back to Home</a>
-    </div>
+        <div>
+          <div style="margin-bottom:8px;font-weight:700;color:var(--muted)">Balance</div>
+          <div id="bal" style="font-weight:900;font-size:20px;color:var(--text)">0</div>
+        </div>
 
-    <h3>Balance: <span id="bal">0</span> coins</h3>
-    <ul id="chores"></ul>
-    <pre id="out" style="white-space:pre-wrap"></pre>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label class="helper-label" style="font-size:14px;margin:0;">Payout coins</label>
+          <input id="payoutCoins" type="number" value="10" class="small" />
+          <button class="primary" onclick="payout()">Payout</button>
+        </div>
 
-    <script>
-      const out = document.getElementById('out');
-      const child = () => document.getElementById('child').value;
+        <div style="margin-left:auto;">
+          <a href="index.html" class="link-button">Back to Home</a>
+        </div>
+      </div>
+    </section>
 
-      async function health(){
-        const r = await fetch('/health'); out.textContent = JSON.stringify(await r.json(), null, 2);
-      }
-
-      async function generate(){
-        const age = document.getElementById('age').value;
-        const interests = document.getElementById('interests').value;
-        const url = `/api/chores/generate?childId=${encodeURIComponent(child())}&age=${age}&interests=${encodeURIComponent(interests)}`;
-        const r = await fetch(url, {method:'POST'});
-        out.textContent = JSON.stringify(await r.json(), null, 2);
-        await listChores(); await balance();
-      }
-
-      async function listChores(){
-        const r = await fetch(`/api/chores?childId=${encodeURIComponent(child())}`);
-        const chores = await r.json();
-        const ul = document.getElementById('chores'); ul.innerHTML = '';
-        chores.forEach(c => {
-          const li = document.createElement('li');
-          li.innerHTML = `<b>${c.title}</b> — ${c.description} (${c.rewardCoins} coins) [${c.status}]
-            <button onclick="approve('${c.id}')">Approve</button>
-            <button onclick="completeChore('${c.id}')">Complete</button>`;
-          ul.appendChild(li);
-        });
-      }
-
-      async function approve(id){
-        await fetch(`/api/chores/${id}/approve?childId=${encodeURIComponent(child())}`, {method:'POST'});
-        await listChores();
-      }
-
-      async function completeChore(id){
-        await fetch(`/api/chores/${id}/complete?childId=${encodeURIComponent(child())}`, {method:'POST'});
-        await listChores(); await balance();
-      }
-
-      async function balance(){
-        const r = await fetch(`/api/coins/balance?childId=${encodeURIComponent(child())}`);
-        const {coins} = await r.json(); document.getElementById('bal').textContent = coins ?? 0;
-      }
-
-      async function payout(){
-        const coins = Number(document.getElementById('payoutCoins').value || 0);
-        const r = await fetch(`/api/coins/payout?childId=${encodeURIComponent(child())}&coins=${coins}`, {method:'POST'});
-        out.textContent = JSON.stringify(await r.json(), null, 2);
-        await balance();
-      }
-
-      // initial load
-      listChores(); balance();
-    </script>
+    <section class="auth-section" style="margin-top:20px;">
+      <h2>Chores</h2>
+      <ul id="chores" style="margin-top:12px;padding-left:18px"></ul>
+      <pre id="out" style="white-space:pre-wrap;margin-top:12px"></pre>
+    </section>
   </main>
+
+<script>
+  const out = document.getElementById('out');
+  const child = () => document.getElementById('name').value;
+
+  async function generate(){
+    const nameVal = child();
+    if(!nameVal){ out.textContent = 'Enter a name first'; return; }
+    try{
+      const r = await fetch(`/api/chores/generate?childId=${encodeURIComponent(nameVal)}`, { method:'POST' });
+      out.textContent = JSON.stringify(await r.json(), null, 2);
+      await listChores(); await updateBalance();
+    }catch(e){ out.textContent = 'Error: '+(e.message||e); }
+  }
+
+  async function listChores(){
+    const nameVal = child();
+    if(!nameVal){ out.textContent = 'Enter a name to list chores'; return; }
+    try{
+      const r = await fetch(`/api/chores?childId=${encodeURIComponent(nameVal)}`);
+      const chores = await r.json();
+      const ul = document.getElementById('chores'); ul.innerHTML = '';
+      chores.forEach(c => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '10px';
+        li.innerHTML = `<b>${escapeHtml(c.title)}</b> — ${escapeHtml(c.description)} (${c.rewardCoins} coins) [${escapeHtml(c.status)}]
+          <div style="margin-top:6px;display:flex;gap:8px">
+            <button onclick="approve('${c.id}')">Approve</button>
+            <button onclick="completeChore('${c.id}')">Complete</button>
+          </div>`;
+        ul.appendChild(li);
+      });
+    }catch(e){ out.textContent = 'Error: '+(e.message||e); }
+  }
+
+  async function approve(id){
+    const nameVal = child();
+    if(!nameVal){ out.textContent='Enter a name'; return; }
+    await fetch(`/api/chores/${id}/approve?childId=${encodeURIComponent(nameVal)}`, {method:'POST'});
+    await listChores();
+  }
+
+  async function completeChore(id){
+    const nameVal = child();
+    if(!nameVal){ out.textContent='Enter a name'; return; }
+    await fetch(`/api/chores/${id}/complete?childId=${encodeURIComponent(nameVal)}`, {method:'POST'});
+    await listChores(); await updateBalance();
+  }
+
+  async function updateBalance(){
+    const nameVal = child();
+    if(!nameVal){ document.getElementById('bal').textContent = '0'; return; }
+    try{
+      const r = await fetch(`/api/coins/balance?childId=${encodeURIComponent(nameVal)}`);
+      const {coins} = await r.json();
+      document.getElementById('bal').textContent = coins ?? 0;
+    }catch(e){ document.getElementById('bal').textContent = '0'; }
+  }
+
+  async function payout(){
+    const nameVal = child();
+    if(!nameVal){ out.textContent='Enter a name'; return; }
+    const coins = Number(document.getElementById('payoutCoins').value || 0);
+    try{
+      const r = await fetch(`/api/coins/payout?childId=${encodeURIComponent(nameVal)}&coins=${coins}`, {method:'POST'});
+      out.textContent = JSON.stringify(await r.json(), null, 2);
+      await updateBalance();
+    }catch(e){ out.textContent = 'Error: '+(e.message||e); }
+  }
+
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+  document.addEventListener('DOMContentLoaded', ()=> {
+    out.textContent = '';
+    updateBalance();
+  });
+</script>
 </body>
 </html>
