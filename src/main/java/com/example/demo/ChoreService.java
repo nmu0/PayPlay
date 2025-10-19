@@ -13,6 +13,19 @@ public class ChoreService {
     private final ConcurrentHashMap<String, Chore> chores = new ConcurrentHashMap<>();
     private final AtomicLong counter = new AtomicLong(0);
 
+    public String createChoreId() {
+        return String.valueOf(counter.incrementAndGet());
+    }
+
+    public int complete(String id) {
+        Chore c = chores.get(id);
+        if (c == null) throw new IllegalArgumentException("Unknown chore id: " + id);
+
+        int coins = 5; // change if you later add a reward field on Chore
+        // c.setCompleted(true); // optional
+        return coins;
+    }
+
     public List<Chore> getAllChores() {
         return new ArrayList<>(chores.values());
     }

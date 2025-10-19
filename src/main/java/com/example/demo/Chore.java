@@ -20,7 +20,8 @@ public class Chore {
     private String id;
     private String title;
     private String description;
-    private BigDecimal reward;      // monetary reward (optional)
+    private BigDecimal reward;
+    private Integer rewardCoins;// monetary reward (optional)
     private Integer pointValue;     // integer points/coins awarded
     private String assignedTo;      // child id
     private Status status;
@@ -62,6 +63,7 @@ public class Chore {
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -70,6 +72,9 @@ public class Chore {
 
     public BigDecimal getReward() { return reward; }
     public void setReward(BigDecimal reward) { this.reward = reward; }
+
+    public Integer getRewardCoins() { return rewardCoins; }
+    public void setRewardCoins(Integer rewardCoins) { this.rewardCoins = rewardCoins; }
 
     public Integer getPointValue() { return pointValue; }
     public void setPointValue(Integer pointValue) { this.pointValue = pointValue; }

@@ -1,58 +1,52 @@
 package com.example.demo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Household {
-    private String id;
+    private static final AtomicLong IDS = new AtomicLong(0);
+
+    private final String id = String.valueOf(IDS.incrementAndGet());
     private String name;
     private String joinCode;
     private String parentId;
-    private Integer budget; // Optional: in cents or dollars
-    private List<String> childIds;
-    private List<String> choreIds;
 
-    // Constructor
-    public Household(String name, String parentId) {
-        this.id = UUID.randomUUID().toString();
-        this.name = name;
-        this.parentId = parentId;
-        this.joinCode = generateJoinCode();
-        this.budget = null;
-        this.childIds = new ArrayList<>();
-        this.choreIds = new ArrayList<>();
+    // children by arbitrary string id (e.g., "kid-001")
+    private final List<String> childIds = new ArrayList<>();
+
+    // keep the full chore objects here
+    private final Map<String, Chore> chores = new LinkedHashMap<>();
+
+    public Household() {
+        this.joinCode = genJoinCode();
     }
 
-    // Getters
+    public Household(String name, String parentId) {
+        this();
+        this.name = (name == null || name.isBlank()) ? "Household" : name.trim();
+        this.parentId = parentId;
+    }
+
+    // Getters / Setters
     public String getId() { return id; }
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     public String getJoinCode() { return joinCode; }
+    public void setJoinCode(String joinCode) { this.joinCode = joinCode; }
     public String getParentId() { return parentId; }
-    public Integer getBudget() { return budget; }
+    public void setParentId(String parentId) { this.parentId = parentId; }
     public List<String> getChildIds() { return childIds; }
-    public List<String> getChoreIds() { return choreIds; }
+    public Map<String, Chore> getChores() { return chores; }
 
-    // Setters
-    public void setBudget(Integer budget) {
-        this.budget = budget;
-    }
-
-    // Membership management
     public void addChild(String childId) {
-        if (!childIds.contains(childId)) {
-            childIds.add(childId);
-        }
+        if (childId != null && !childIds.contains(childId)) childIds.add(childId);
     }
 
-    public void addChore(String choreId) {
-        if (!choreIds.contains(choreId)) {
-            choreIds.add(choreId);
-        }
-    }
-
-    // Utility
-    private String generateJoinCode() {
-        return UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+    private static String genJoinCode() {
+        String ALPHA = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+        Random r = new Random();
+        StringBuilder sb = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) sb.append(ALPHA.charAt(r.nextInt(ALPHA.length())));
+        return sb.toString();
     }
 }

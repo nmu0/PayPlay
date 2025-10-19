@@ -15,6 +15,15 @@ public class Transaction {
         this.timestamp = LocalDateTime.now();
     }
 
+    public static Transaction earn(int amount) {
+        return new Transaction(amount, "Earned chore coins", "EARN");
+    }
+
+    public static Transaction redeem(int amount) {
+        return new Transaction(amount, "Redeemed coins", "REDEEM");
+    }
+
+
     // Getters
     public int getAmount() { return amount; }
     public String getDescription() { return description; }

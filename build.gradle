@@ -8,8 +8,13 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '21'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
+// If you already have these, set to 17 as well:
+// sourceCompatibility = JavaVersion.VERSION_17
+// targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
